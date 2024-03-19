@@ -16,8 +16,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/users", userRoutes);
 app.use(errorController.get404);
 
+const Post = require("./model/post");
+const User = require("./model/user");
+Post.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Post);
+
 sequelize
-  .sync()
+  .sync({ force: true })
   .then((result) => {
     // Listen
     app.listen(3000);
